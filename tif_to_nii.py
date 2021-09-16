@@ -10,7 +10,7 @@ import cv2
 import matplotlib.pyplot as plt
 from progress.bar import IncrementalBar
 
-filepath = r'./chunk_old/Dry(Frozen)/'
+filepath = r'../chunk_old/Dry(Frozen)/'
 savepath = r'./Dry(Frozen)_out/'
 tifpath = r'./out_tif/'
 
@@ -38,7 +38,6 @@ def tif_hu_threshold(val):
 def Rescale(img):
     data = img
     data = crop_roi(data)
-
     data = np.vectorize(tif_hu_threshold)(data)
 
     return img
