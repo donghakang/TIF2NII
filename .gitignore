@@ -1,2 +1,20 @@
 .DS_Store
 venv/
+
+# CACHE
+__pycache__/
+*.pyc
+
+# NIFTI FORMAT
+*.nii
+*.nia
+*.nii.gz
+*.img.gz
+*.img
+*.hdr
+
+# TIF FORMAT
+*.tif
+*.tiff
+*.TIF
+*.TIFF
