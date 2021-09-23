@@ -59,22 +59,23 @@ def downsample_patient(original_CT, resize_factor):
 
     reference_center = np.array(reference_image.TransformContinuousIndexToPhysicalPoint(
         np.array(reference_image.GetSize()) * resize_factor))
+    
 
     transform = sitk.AffineTransform(dimension)
     transform.SetMatrix(original_CT.GetDirection())
 
     transform.SetTranslation(
         np.array(original_CT.GetOrigin()) - reference_origin)
-
+    
     centering_transform = sitk.TranslationTransform(dimension)
     img_center = np.array(original_CT.TransformContinuousIndexToPhysicalPoint(
         np.array(original_CT.GetSize()) * resize_factor))
+    
+    
     centering_transform.SetOffset(
         np.array(transform.GetInverse().TransformPoint(img_center) - reference_center))
     centered_transform = sitk.CompositeTransform([centering_transform])
-    # centered_transform.AddTransform(centering_transform)
-
-    # sitk.Show(sitk.Resample(original_CT, reference_image, centered_transform, sitk.sitkLinear, 0.0))
+    
 
     return sitk.Resample(original_CT, reference_image, centered_transform, sitk.sitkLinear, 0.0)
 
@@ -98,10 +99,8 @@ def main(filename, loadpath, savepath, position, refactor):
     join_series.SetOrigin((0.0, 0.0, 0.0))
 
     join_series.SetSpacing((spacing, spacing, 1))
-    print(f"🚀🚀🚀🚀🚀{join_series.GetSpacing()}")
-
-    print('[+] 💻 Creating joined series')
     sitk.WriteImage(join_series, savepath + '/' + filename)
+    
     print('[+] ✨ Creating Nifti successful')
 
 

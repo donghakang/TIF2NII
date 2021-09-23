@@ -54,15 +54,44 @@ class Page2(Frame):
         '''
         # update controller data
         self.controller.show_frame("Page3")
+        self.controller.resize_factor = self.RESIZE_FACTOR
+
+        REAL_IMG_SIZE_X = int(self.img.size[0] / self.RESIZE_FACTOR)
+        REAL_IMG_SIZE_Y = int(self.img.size[1] / self.RESIZE_FACTOR)
+
         try:
+            START_X_POS = 0
+            START_Y_POS = 1
+            END_X_POS = 2
+            END_Y_POS = 3
+
             crop_size = [self.start_x, self.start_y, self.end_x, self.end_y]
+            crop_size = list(map(lambda x: int(x / self.RESIZE_FACTOR), crop_size))
+            crop_size[START_X_POS] -= self.canvas_offset_x
+            crop_size[END_X_POS] -= self.canvas_offset_x
+
+            # if the square was created in different direction
+            if crop_size[START_X_POS] > crop_size[END_X_POS]:
+                crop_size[START_X_POS], crop_size[END_X_POS] = crop_size[END_X_POS], crop_size[START_X_POS]
+            if crop_size[START_Y_POS] > crop_size[END_Y_POS]:
+                crop_size[START_Y_POS], crop_size[END_Y_POS] = crop_size[END_Y_POS], crop_size[START_Y_POS]
+            # if the image is out of bound
+
+            if crop_size[START_X_POS] < 0: 
+                crop_size[START_X_POS] = 0
+            if crop_size[START_Y_POS] < 0:
+                crop_size[START_Y_POS] = 0
+            if crop_size[END_X_POS] > REAL_IMG_SIZE_X:
+                crop_size[END_X_POS] = REAL_IMG_SIZE_X
+            if crop_size[END_Y_POS] > REAL_IMG_SIZE_Y:
+                crop_size[END_Y_POS] = REAL_IMG_SIZE_Y
+
         except:
             print("No image crop")
-            crop_size = [0, 0, self.img.size[0], self.img.size[1]]
+            crop_size = [0, 0, REAL_IMG_SIZE_X, REAL_IMG_SIZE_Y]
 
-        self.controller.crop_size = tuple(
-            map(lambda x: int(x / self.RESIZE_FACTOR), crop_size))
-        self.controller.resize_factor = self.RESIZE_FACTOR
+        self.controller.crop_size = tuple(crop_size)
+        
 
         PAGE_THREE = self.controller.frames["Page3"]
         PAGE_THREE.set_page_3()
@@ -98,6 +127,10 @@ class Page2(Frame):
         self.canvas.width = img_w
         self.canvas.height = img_h
         self.canvas.image = my_image
+        self.canvas_offset_x = int(((self.canvas.winfo_width() / self.RESIZE_FACTOR) - (self.canvas.width / self.RESIZE_FACTOR)) / 2)
+
+        # print(self.canvas.winfo_width(), self.canvas.winfo_height(), self.canvas.width, self.canvas.height)
+        # print(self.canvas.winfo_width() / self.RESIZE_FACTOR, self.canvas.winfo_height() / self.RESIZE_FACTOR)
 
         # drawing rectangle
         self.x = self.y = 0
@@ -106,8 +139,8 @@ class Page2(Frame):
         self.canvas.bind('<B1-Motion>', self.on_press_move)
         self.canvas.bind('<ButtonRelease-1>', self.on_mouse_leave)
 
-    # Mouse controller
 
+    # Mouse controller
     def on_mouse_press(self, e):
         if self.rect:
             self.canvas.delete(self.rect)
@@ -123,7 +156,7 @@ class Page2(Frame):
                            self.start_y, self.end_x, self.end_y)
 
     def on_mouse_leave(self, e):
-        self.box_size_label['text'] = str(int((self.end_x - self.start_x) / self.RESIZE_FACTOR)) + \
+        self.box_size_label['text'] = str(abs(int((self.end_x - self.start_x) / self.RESIZE_FACTOR))) + \
             " X " + \
-            str(int(
-                (self.end_y - self.start_y) / self.RESIZE_FACTOR))
+            str(abs(int(
+                (self.end_y - self.start_y) / self.RESIZE_FACTOR)))

@@ -51,6 +51,7 @@ def downsamplePatient(original_CT, resize_factor):
         original_CT.GetSize(), original_CT.GetSpacing(), reference_physical_size)]
 
     reference_origin = original_CT.GetOrigin()
+    print(reference_origin)
     reference_direction = original_CT.GetDirection()
 
     reference_size = [round(sz/resize_factor) for sz in original_CT.GetSize()]

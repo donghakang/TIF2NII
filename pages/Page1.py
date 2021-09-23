@@ -18,7 +18,7 @@ class Page1(Frame):
         # file buttons
         self.loaded_directory = StringVar()
         self.loaded_directory.trace_add('write', self.callback)
-        self.loadpath_entry = Entry(self, textvariable=self.loaded_directory)
+        self.loadpath_entry = Entry(self, state=DISABLED, textvariable=self.loaded_directory)
         self.loadpath_button = Button(
             self, width=10, text="Load Path", command=self.get_load_path)
 
@@ -33,8 +33,6 @@ class Page1(Frame):
 
         self.listbox = Listbox(self.file_frame, borderwidth=0,
                                highlightthickness=0, yscrollcommand=scrollbar.set)
-        # for line in range(1,1001):
-        #    listbox.insert(line, str(line) + "/1000")
         self.listbox.grid(row=0, column=0, sticky='nwse')
 
         scrollbar["command"] = self.listbox.yview
@@ -103,7 +101,6 @@ class Page1(Frame):
         - Update initialized Page 2 with new variables.
         '''
         self.controller.tif_images = self.tif_files
-        # self.controller.frames["Page2"].label["text"] = self.tif_files[0]
 
         # change data in page one.
         if self.tif_files:
